@@ -15,7 +15,7 @@ then
 	exit
 fi
 
-mc_manifest_json=$(curl -s $mc_manifest)
+mc_manifest_json=$(wget -qO - $mc_manifest)
 
 if [ $version = 'latest' ]
 then
@@ -33,6 +33,6 @@ do
 done
 
 version_url_http=$(echo $version_url | sed 's/https/http/;s/"//g')
-download_url=$(curl $version_url_http | jq .downloads.server.url | sed 's/"//g')
+download_url=$(wget -qO - $version_url_http | jq .downloads.server.url | sed 's/"//g')
 wget $download_url
 exit
