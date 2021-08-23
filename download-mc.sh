@@ -5,13 +5,13 @@ version=$1
 
 if ! command -v jq > /dev/null
 then
-	echo Missing dependencies: jq
+	printf "Missing dependencies: jq"
 	exit
 fi
 
 if [ -z $version ]
 then
-	echo Please provide version number or 'latest'
+	printf "Please provide version number or 'latest'"
 	exit
 fi
 
@@ -20,7 +20,6 @@ mc_manifest_json=$(wget -qO - $mc_manifest)
 if [ $version = 'latest' ]
 then
 	version=$(echo $mc_manifest_json | jq '.latest.release' | sed 's/"//g')
-	echo $version
 fi
 
 for i in $(echo $mc_manifest_json | jq '.versions | keys | .[]') 
@@ -34,5 +33,6 @@ done
 
 version_url_http=$(echo $version_url | sed 's/https/http/;s/"//g')
 download_url=$(wget -qO - $version_url_http | jq .downloads.server.url | sed 's/"//g')
-wget $download_url
+printf "Downloading version $version\n\n"
+wget $download_url -O server-$version.jar
 exit
